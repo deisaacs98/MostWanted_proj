@@ -7,50 +7,48 @@ Build all of your functions for displaying and gathering information below (GUI)
 function app(people){
   let searchType = prompt("How would you like to search? \n\n1. First Name\n2. Last Name\n3. Gender\n4. Date of Birth\n5. Eye Color\n6. Height\n7. Weight\n8.Occupation");
   let searchResults;
+  let searchAgain
   switch(searchType){
     case "1":
-      searchResults=searchByValue(people, "firstName", "first name")
-      if(searchResults[1]===null){
-        break;
-      }
-      else{
-        app(searchResults);
-      }
+      searchResults=searchByValue(people, "firstName", "first name");
+      break;
     case "2":
-      searchResults=searchByValue(people, "lastName", "last name")
-      if(searchResults[1]===null){
-        break;
-      }
-      else{
-        app(searchResults);
-      }
+      searchResults=searchByValue(people, "lastName", "last name");
       break;
     case "3":
-      searchResults=searchByValue(people, "gender", "gender")
+      searchResults=searchByValue(people, "gender", "gender");
       break;
     case "4":
-      searchResults=searchByValue(people, "dob", "date of birth")
+      searchResults=searchByValue(people, "dob", "date of birth");
       break;
     case "5":
-      searchResults=searchByValue(people, "eyeColor", "eye color")
+      searchResults=searchByValue(people, "eyeColor", "eye color");
       break;
     case "6":
-      searchResults=searchByValue(people, "height", "height")
+      searchResults=searchByValue(people, "height", "height");
       break;
     case "7":
-      searchResults=searchByValue(people, "weight", "weight")
+      searchResults=searchByValue(people, "weight", "weight");
       break;
     case "8":
-      searchResults=searchByValue(people, "occupation", "occupation")
+      searchResults=searchByValue(people, "occupation", "occupation");
       break;
     default:
       app(people); // restart app
       break;
+      
   }
-
   
-  // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
-  mainMenu(searchResults, people);
+  searchAgain=promptFor("Would you like to search again?",yesNo)
+  if(searchAgain=="yes"){
+    app(searchResults);
+  }
+  else if(searchResults[1]===null){
+    mainMenu(searchResults,people)
+  }
+  else{
+    displayPeople(searchResults);
+  }
 }
 
 // Menu function to call once you find who you are looking for
@@ -96,7 +94,7 @@ function searchByValue(people,valueType,valueName){
       return false;
     }
   })
-  displayPeople(foundPerson);
+  
   // TODO: find the person using the name they entered
   return foundPerson;
 }
