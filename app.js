@@ -73,6 +73,7 @@ function mainMenu(person, people){
     break;
     case "family":
     // TODO: get person's family
+    displayFamily(person,people);
     break;
     case "descendants":
     // TODO: get person's descendants
@@ -126,30 +127,109 @@ function displayPerson(person){
   alert(personInfo);
 }
 
-function findDescendants(person,people){  
-  let foundPerson = people.filter(function(otherPerson){
-    if(otherPerson["parent"] === person["id"]&&otherPerson!=person){
+function findDescendants(person,people,descendants=[]){  
+  let foundDescendants = people.filter(function(otherPerson){
+    if(otherPerson["parents"].includes(person["id"]) ){
       return true;
     }
     else{
       return false;
     }
   })
-  return foundPerson;
+  if(foundDescendants.length>0){
+    descendants.push(foundDescendants);
+    for(let i=0;i<foundDescendants.Length;i++){
+      moreDescendants=findDescendants(foundDescendants[i],people,descendants);
+      descendants.push(moreDescendants);
+    }
+  }
+  
+  return descendants;
 }
 
-function displayDescendants(person,people,descendants=[]){
-  let newDescendants=findDescendants(person,people);
-  descendants.push(newDescendants);
-  if(newDescendants.length>0){
-    for(let i=0;i<newDescendants.length;i++){
-      displayDescendants(newDescendants[i],people,descendants);
+function displayDescendants(person,people){
+  let descendants=findDescendants(person,people);
+  if(descendants.length>0){
+    displayPeople(descendants[0]);
+  }
+}
+
+function findParents(person, people){
+  let foundPeople = people.filter(function(otherPerson){
+    if(person.parents.includes(otherPerson.id)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return foundPeople;
+}
+
+function findSpouse(person, people){
+  let foundPeople = people.filter(function(otherPerson){
+    if(person.currentSpouse === otherPerson.id){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return foundPeople;
+}
+
+function findSiblings(person, people){
+  var foundSiblings = people.filter(function(otherPerson){
+    if(otherPerson.parents.includes(person.parents[0])||otherPerson.parents.includes(person.parents[1])&&otherPerson.id!=person.id){
+      return true;
+    }
+    else{
+      return false;  
+    }
+  })
+  var foundSiblings2 = foundSiblings.filter(function(another){
+    if(person.id!==another.id){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return foundSiblings2;
+}
+function displayFamily(person, people,family="No Family Found"){
+  let familyInfo="";
+  let parents = findParents(person, people);
+  let spouse = findSpouse(person, people);
+  let siblings = findSiblings(person, people);
+  if (parents.length>0){
+    for(let i=0;i<parents.length;i++){
+      familyInfo+="Parent: ";
+      familyInfo+=parents[i].firstName+" "+parents[i].lastName+"\n";
     }
   }
   else{
-    displayPeople(descendants);
+    familyInfo+="No parents found"+"\n";
   }
+  if (spouse.length>0){
+    familyInfo+="Spouse: "+spouse[0].firstName+" "+spouse[0].lastName+"\n";
+  }
+  else{
+    familyInfo+="No Spouse found"+"\n";
+  }
+  if(siblings.length>0){
+  
+    for (let i = 0;i<siblings.length;i++){
+      familyInfo+="Sibling: ";
+      familyInfo+=siblings[i].firstName+" "+siblings[i].lastName+"\n";
+    }
+  }
+  else{
+    familyInfo+="No Siblings found";
+  }
+  alert(familyInfo);
 }
+
 // function that prompts and validates user input
 function promptFor(question, valid){
   do{
