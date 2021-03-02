@@ -129,28 +129,27 @@ function displayPerson(person){
 
 function findDescendants(person,people,descendants=[]){  
   let foundDescendants = people.filter(function(otherPerson){
-    if(otherPerson["parents"].includes(person["id"]) ){
-      return true;
+    if(otherPerson["parents"].includes(person["id"])&&!descendants.includes(otherPerson)){
+      descendants.push(otherPerson);
+      let moreDescendants=findDescendants(otherPerson,people,descendants);
+      if(moreDescendants.length>0){
+        return moreDescendants;
+      }
+      else{
+        return false;
+      }
     }
     else{
       return false;
     }
   })
-  if(foundDescendants.length>0){
-    descendants.push(foundDescendants);
-    for(let i=0;i<foundDescendants.Length;i++){
-      moreDescendants=findDescendants(foundDescendants[i],people,descendants);
-      descendants.push(moreDescendants);
-    }
-  }
-  
   return descendants;
 }
 
 function displayDescendants(person,people){
   let descendants=findDescendants(person,people);
   if(descendants.length>0){
-    displayPeople(descendants[0]);
+    displayPeople(descendants);
   }
 }
 
