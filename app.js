@@ -43,7 +43,7 @@ function app(people){
   if(searchAgain=="yes"){
     app(searchResults);
   }
-  else if(searchResults[1]===null&&searchAgain=="no"){
+  else if(searchResults.length===1&&searchAgain==="no"){
     mainMenu(searchResults[0],people);
   }
   else{
