@@ -41,6 +41,10 @@ function app(people){
   if(searchResults.length==1){
     mainMenu(searchResults[0],people);
   }
+  else if(searchResults.length==0)
+  {
+    mainMenu(null,people);
+  }
   else{
     searchAgain=promptFor("Would you like to search again?",yesNo)
     if(searchAgain=="yes"){
