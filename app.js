@@ -43,8 +43,8 @@ function app(people){
   if(searchAgain=="yes"){
     app(searchResults);
   }
-  else if(searchResults[1]===null){
-    mainMenu(searchResults,people)
+  else if(searchResults[1]===null&&searchAgain=="no"){
+    mainMenu(searchResults[0],people);
   }
   else{
     displayPeople(searchResults);
@@ -56,7 +56,7 @@ function mainMenu(person, people){
 
   /* Here we pass in the entire person object that we found in our search, as well as the entire original dataset of people. We need people in order to find descendants and other information that the user may want. */
 
-  if(!person){
+  if(!person||people[person]==null){
     alert("Could not find that individual.");
     return app(people); // restart
   }
@@ -66,12 +66,14 @@ function mainMenu(person, people){
   switch(displayOption){
     case "info":
     // TODO: get person's info
+    displayPerson(person);
     break;
     case "family":
     // TODO: get person's family
     break;
     case "descendants":
     // TODO: get person's descendants
+    displayDescendants(person,people,[])
     break;
     case "restart":
     app(people); // restart
@@ -121,6 +123,29 @@ function displayPerson(person){
   alert(personInfo);
 }
 
+function findDescendants(person,people,){  
+  let foundPerson = people.filter(function(otherPerson){
+    if(otherPerson[parent] === person[id]){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return foundPerson;
+}
+
+function displayDescendants(person,people,descendants=[]){
+  descendants.push(findDescendants(person,people));
+  if(descendants.length>0){
+    for(i=0;i<descendants.length;i++){
+      displayDescendants(descendants[i],people,descendants)
+    }
+  }
+  else{
+    displayPeople(descendants);
+  }
+}
 // function that prompts and validates user input
 function promptFor(question, valid){
   do{
