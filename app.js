@@ -38,17 +38,20 @@ function app(people){
       break;
       
   }
-  
-  searchAgain=promptFor("Would you like to search again?",yesNo)
-  if(searchAgain=="yes"){
-    app(searchResults);
-  }
-  else if(searchResults.length===1&&searchAgain==="no"){
+  if(searchResults.length==1){
     mainMenu(searchResults[0],people);
   }
   else{
-    displayPeople(searchResults);
+    searchAgain=promptFor("Would you like to search again?",yesNo)
+    if(searchAgain=="yes"){
+      app(searchResults);
+    }
+    else{
+      displayPeople(searchResults);
+    }
+
   }
+  
 }
 
 // Menu function to call once you find who you are looking for
@@ -56,7 +59,7 @@ function mainMenu(person, people){
 
   /* Here we pass in the entire person object that we found in our search, as well as the entire original dataset of people. We need people in order to find descendants and other information that the user may want. */
 
-  if(!person||people[person]==null){
+  if(!person){
     alert("Could not find that individual.");
     return app(people); // restart
   }
@@ -73,7 +76,7 @@ function mainMenu(person, people){
     break;
     case "descendants":
     // TODO: get person's descendants
-    displayDescendants(person,people,[])
+    displayDescendants(person,people)
     break;
     case "restart":
     app(people); // restart
@@ -123,9 +126,9 @@ function displayPerson(person){
   alert(personInfo);
 }
 
-function findDescendants(person,people,){  
+function findDescendants(person,people){  
   let foundPerson = people.filter(function(otherPerson){
-    if(otherPerson[parent] === person[id]){
+    if(otherPerson["parent"] === person["id"]&&otherPerson!=person){
       return true;
     }
     else{
@@ -136,10 +139,11 @@ function findDescendants(person,people,){
 }
 
 function displayDescendants(person,people,descendants=[]){
-  descendants.push(findDescendants(person,people));
-  if(descendants.length>0){
-    for(i=0;i<descendants.length;i++){
-      displayDescendants(descendants[i],people,descendants)
+  let newDescendants=findDescendants(person,people);
+  descendants.push(newDescendants);
+  if(newDescendants.length>0){
+    for(let i=0;i<newDescendants.length;i++){
+      displayDescendants(newDescendants[i],people,descendants);
     }
   }
   else{
