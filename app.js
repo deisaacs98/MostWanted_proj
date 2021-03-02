@@ -6,8 +6,12 @@ Build all of your functions for displaying and gathering information below (GUI)
 // app is the function called to start the entire application
 function app(people){
   let searchType = prompt("How would you like to search? \n\n1. First Name\n2. Last Name\n3. Gender\n4. Date of Birth\n5. Eye Color\n6. Height\n7. Weight\n8.Occupation");
+  let searchResults = selectSearch(searchType,people);
+  displaySearchResults(searchResults,people);
+}
+
+function selectSearch(searchType,people){
   let searchResults;
-  let searchAgain
   switch(searchType){
     case "1":
       searchResults=searchByValue(people, "firstName", "first name");
@@ -36,8 +40,11 @@ function app(people){
     default:
       app(people); // restart app
       break;
-      
+
   }
+  return searchResults;
+}
+function displaySearchResults(searchResults,people){
   if(searchResults.length==1){
     mainMenu(searchResults[0],people);
   }
@@ -46,18 +53,20 @@ function app(people){
     mainMenu(null,people);
   }
   else{
-    searchAgain=promptFor("Would you like to search again?",yesNo)
+    displayPeople(searchResults);
+    let searchAgain=promptFor("Would you like to search from the names on this list?",yesNo)
     if(searchAgain=="yes"){
       app(searchResults);
     }
     else{
-      displayPeople(searchResults);
+      searchAgain=promptFor("Would you like to search from the entire list?",yesNo)
+      if(searchAgain="yes"){
+        app(people);
+      }
     }
-
   }
-  
-}
 
+}
 // Menu function to call once you find who you are looking for
 function mainMenu(person, people){
 
@@ -252,4 +261,6 @@ function yesNo(input){
 function chars(input){
   return true; // default validation only
 }
+
+
 
